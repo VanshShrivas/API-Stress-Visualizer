@@ -17,7 +17,7 @@ export default async function startLoadTest(config){
     if (config.concurrency > config.totalRequests) {
         throw new AppError("Concurrency cannot exceed totalRequests", 400);
     }
-    if(config.concurreny>567 || config.totalRequests>10000){
+    if(config.concurrency>567 || config.totalRequests>10000){
         throw new AppError("Keep values under given limits😭",400);
     }
     if (!config.url) {
@@ -31,8 +31,10 @@ export default async function startLoadTest(config){
     addTestState(testState);
 
             // 4. Start async scheduler
-    await runScheduler(testState);
-    
+    runScheduler(testState).then(() => {
+        testState.endTime = Date.now();
+        testState.status = "completed";
+    });
             // Immediately return testId :(w/o realtime feature: we are just aggreagting all the data into the testStae and returning the id so that the user knows it and can )
     return {testID: testState.id};
             // NOT:

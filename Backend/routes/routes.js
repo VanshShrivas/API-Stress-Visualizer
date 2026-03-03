@@ -11,15 +11,14 @@ router.post("/start-load-test", async(req,res)=>{
     try {
         const response = await startLoadTest(config);
         res.json(response);
+        console.log("this will do all tests")
     } catch (err) {
-        res.status(500).json({ error: "Load test failed" });
+        res.status(err.statusCode || 500).json({ error: err.message || "Load test failed" });
     }
 
-    res.send(response);
-    console.log("this will do all tests")
 })
 
-router.get("/send-test-info",()=>{
+router.get("/send-test-info", (req, res) => {
     console.log("sending the data!!");
-})
-
+    res.json({ message: "Test info endpoint" });
+});
