@@ -1,9 +1,9 @@
-import getMetrics from "../utils/metrics";
-import AppError from "../utils/AppError";
-import validateEndpoint from "../utils/validateEndpoint"
-import createTestState from "../utils/createTestState";
-import { addTestState } from "../store/testStore";
-import runScheduler from "../utils/scheduler";
+import getMetrics from "../utils/metrics.js";
+import AppError from "../utils/AppError.js";
+import validateEndpoint from "../utils/validateEndpoint.js"
+import createTestState from "../utils/createTestState.js";
+import { addTestState } from "../store/testStore.js";
+import runScheduler from "../utils/scheduler.js";
 
 export default async function startLoadTest(config){
 

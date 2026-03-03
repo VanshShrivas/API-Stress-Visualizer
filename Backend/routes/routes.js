@@ -1,5 +1,5 @@
 import express from 'express'
-import startLoadTest from '../services/loadEngine';
+import startLoadTest from '../services/loadEngine.js';
 
 export const router=express.Router();
 
