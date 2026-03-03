@@ -1,0 +1,1 @@
+“I built this tool mainly as a learning project and resume showcase. It demonstrates concurrency handling, async scheduling, metrics aggregation, and API testing concepts. I chose not to deploy it publicly because stress testing arbitrary APIs from a server could cause legal or technical issues. The repo shows the full implementation and design.”
