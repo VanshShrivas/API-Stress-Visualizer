@@ -3,12 +3,17 @@ import startLoadTest from '../services/loadEngine';
 
 export const router=express.Router();
 
-router.post("/start-load-test",(req,res)=>{
+router.post("/start-load-test", async(req,res)=>{
 
-    const {url,method,headers,auth,body,totalRequests,concurrency}=req.body;
-    const config={url,method,headers,auth,body,totalRequests,concurrency};
+    const {url,method,headers,body,totalRequests,concurrency}=req.body;
+    const config={url,method,headers,body,totalRequests,concurrency};
 
-    const response = startLoadTest(config);
+    try {
+        const response = await startLoadTest(config);
+        res.json(response);
+    } catch (err) {
+        res.status(500).json({ error: "Load test failed" });
+    }
 
     res.send(response);
     console.log("this will do all tests")
