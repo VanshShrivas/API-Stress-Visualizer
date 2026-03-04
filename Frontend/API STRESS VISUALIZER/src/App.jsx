@@ -25,7 +25,8 @@ const App = () => {
 
   const { metrics, historyData } = useLoadTest(testId, () => {
     console.log("Test Completed successfully!");
-  });
+  }); 
+  //since this depends on testId which is a state in my project..so whenver the id is set (either a new test or the recent test id=>truiggers the useLoadTest function which in turn calls the info route with the given testID which is important to note as this would only be able to give the data if the server has not been restarted in between...to eliminate we have to have to use database or the local client side storage where we can just put in data into the local storage alongwith the testID (for now we are only setting ids into the local storage this can be changed...))
 
   const handleStartTest = async (e) => {
     e.preventDefault();
@@ -83,26 +84,28 @@ const App = () => {
       {/* Sidebar */}
       <Sidebar
         history={history}
-        onSelect={id => { setTestId(id); setSidebarOpen(false); }}
+        onSelect={id => { setTestId(id); }}
         activeId={testId}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)} 
       />
 
       {/* Hamburger Icon */}
-      <button 
-        className="absolute top-4 left-4 z-50 md:hidden p-2 rounded bg-gray-900 border border-gray-700 hover:bg-gray-800 transition"
-        onClick={() => setSidebarOpen(prev => !prev)}
+      {(!sidebarOpen && <button 
+        className="absolute top-4 left-4 z-50 p-2 rounded bg-gray-900 border border-gray-700 hover:bg-gray-800 transition"
+        onClick={() => {setSidebarOpen(true)}}
       >
         <Menu size={24} className="text-gray-200" />
-      </button>
+      </button>)}
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto p-8 bg-[#0a0a0a] relative">
         <div className="max-w-7xl mx-auto space-y-8">
-          <div className="flex justify-between items-end">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end items-start gap-4">
             <div>
-              <h2 className="text-4xl font-black text-white tracking-tight">Dashboard</h2>
+              <h1 className="text-2xl font-black italic text-white tracking-tighter">
+                LOAD<span className="text-blue-500">VIZ</span>
+              </h1>
               <p className="text-gray-500 font-medium">Monitor your API performance in real-time.</p>
             </div>
             {testId && (
@@ -111,6 +114,11 @@ const App = () => {
               </div>
             )}
           </div>
+            {/* {testId && (
+              <div className="px-4 py-1 bg-blue-500/10 border md:hidden border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
+                LIVE SESSION: {testId}
+              </div>
+            )} */}
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4">

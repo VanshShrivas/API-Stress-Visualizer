@@ -6,7 +6,7 @@ const Sidebar = ({ history, onSelect, activeId, open, onClose }) => {
     <>
       {/* Overlay sidebar for all screens */}
       <div className={`fixed inset-0 z-50 bg-black/50 transition-transform ${open ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="w-72 h-full bg-gray-950 p-6 flex flex-col relative">
+        <div className="w-85 h-full bg-gray-950 p-6 flex flex-col relative">
           {/* Close button */}
           <button 
             className="absolute top-4 right-4 text-gray-400 hover:text-red-500"
@@ -25,12 +25,11 @@ const SidebarContent = ({ history, onSelect, activeId }) => (
   <>
     <div className="mb-10">
       <h1 className="text-2xl font-black italic text-white tracking-tighter">
-        LOAD<span className="text-blue-500">VIZ</span>
+        REC<span className="text-blue-500">ENTS</span>
       </h1>
-      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">v1.0.4 - Premium</p>
     </div>
 
-    <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-4">Recent Sessions</h3>
+    <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-4">Recent 10 Tests</h3>
     <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
       {history.length === 0 && <p className="text-gray-700 text-sm italic">No history yet...</p>}
       {history.map((id, index) => (
@@ -44,7 +43,7 @@ const SidebarContent = ({ history, onSelect, activeId }) => (
           }`}
         >
           <div className="text-[10px] text-gray-500 mb-1">Session ID</div>
-          <div className="font-mono text-xs font-bold">{id}</div>
+          <div className="font-mono p-1 text-xs font-bold">{id}</div>
         </button>
       ))}
     </div>
