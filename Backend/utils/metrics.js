@@ -1,3 +1,5 @@
+import AppError from "../utils/AppError.js";
+
 export default function getMetrics(testState) {
     const {
         totalRequests,

@@ -3,6 +3,7 @@ import AppError from "../utils/AppError.js";
 import validateEndpoint from "../utils/validateEndpoint.js"
 import createTestState from "../utils/createTestState.js";
 import { addTestState } from "../store/testStore.js";
+import { tests } from "../store/testStore.js";
 import runScheduler from "../utils/scheduler.js";
 
 export default async function startLoadTest(config){
@@ -29,13 +30,10 @@ export default async function startLoadTest(config){
             // 3. Create test state
     const testState=createTestState(config);
     addTestState(testState);
-
+    console.log(testState);
             // 4. Start async scheduler
-    runScheduler(testState).then(() => {
-        testState.endTime = Date.now();
-        testState.status = "completed";
-    });
-            // Immediately return testId :(w/o realtime feature: we are just aggreagting all the data into the testStae and returning the id so that the user knows it and can )
+    runScheduler(testState);
+            // 5. Immediately return testId :(w/o realtime feature: we are just aggreagting all the data into the testStae and returning the id so that the user knows it and can )
     return {testID: testState.id};
             // NOT:
             // Wait for all requests

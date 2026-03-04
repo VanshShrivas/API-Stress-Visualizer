@@ -1,3 +1,5 @@
+import AppError from "../utils/AppError.js";
+
 export default async function validateEndpoint(config) {
 
     // 1. URL format check

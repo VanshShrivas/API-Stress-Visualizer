@@ -1,6 +1,6 @@
 export default async function runScheduler(testState) {
 
-    const { totalRequests, concurrency, config } = testState;
+    const { totalRequests, concurrency} = testState;
 
     let running = 0;
     let index = 0;
@@ -11,23 +11,27 @@ export default async function runScheduler(testState) {
             while (running < concurrency && index < totalRequests) {
                 running++;
                 index++;
-
+                
                 executeRequest(testState)
-                    .finally(() => {
-                        running--;
-                        testState.completed++;
+                .finally(() => {
+                    running--;
+                    testState.completed++;
+                    
+                    if (testState.aborted || testState.completed === totalRequests) {
+                        if(testState.aborted)
+                            testState.status = "aborted";
+                        else 
+                            testState.status="completed";
 
-                        if (testState.completed === totalRequests) {
-                            testState.status = "completed";
-                            testState.endTime = Date.now();
-                            resolve();
-                        } else {
-                            launchNext();
-                        }
-                    });
+                        testState.endTime = Date.now();
+                        resolve();
+                    } else {
+                        launchNext();
+                    }
+                });
             }
         }
-
+        
         launchNext();
     });
 }

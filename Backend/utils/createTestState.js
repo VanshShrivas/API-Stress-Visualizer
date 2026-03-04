@@ -11,6 +11,7 @@ export default function createTestState(config){
         success: 0,
         errors: 0,
         latencies: [],
+        aborted:false,
         startTime: Date.now(),
         endTime: null
     }
