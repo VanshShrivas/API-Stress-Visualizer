@@ -11,6 +11,8 @@ export default function createTestState(config){
         success: 0,
         errors: 0,
         latencies: [],
+        buckets:[0,100,200,400,800,1000,1500,2000,3000],
+        counts:[0,0,0,0,0,0,0,0,0],
         aborted:false,
         startTime: Date.now(),
         endTime: null

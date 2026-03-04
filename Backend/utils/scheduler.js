@@ -60,6 +60,17 @@ async function executeRequest(testState) {
         testState.errors++;
     } finally {
         const latency = Date.now() - start;
+        let placed = false;
+        for (let i = 1; i < testState.buckets.length; i++) {
+            if (latency < testState.buckets[i]) {
+                testState.counts[i - 1]++;
+                placed = true;
+                break;
+            }
+        }
+        if (!placed) {
+            testState.counts[testState.counts.length - 1]++;
+        }
         testState.latencies.push(latency);
     }
 }

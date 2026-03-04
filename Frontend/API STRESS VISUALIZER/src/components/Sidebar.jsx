@@ -31,7 +31,7 @@ const SidebarContent = ({ history, onSelect, activeId }) => (
 
     <h3 className="text-xs font-black text-gray-600 uppercase tracking-widest mb-4">Recent 10 Tests</h3>
     <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-      {history.length === 0 && <p className="text-gray-700 text-sm italic">No history yet...</p>}
+      {history.length === 0 && <p className="text-gray-500 text-sm italic">No history yet...</p>}
       {history.map((id, index) => (
         <button 
           key={id + index} 

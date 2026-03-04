@@ -5,6 +5,7 @@ import MetricsGrid from './components/MetricsGrid';
 import { LiveChart } from './components/LiveChart';
 import { useLoadTest } from './useLoadTest';
 import { Menu } from 'lucide-react';
+import LatencyBucketHistogram from './components/LatencyBucketHistogram';
 
 const App = () => {
   const [testId, setTestId] = useState(null);
@@ -114,12 +115,7 @@ const App = () => {
               </div>
             )}
           </div>
-            {/* {testId && (
-              <div className="px-4 py-1 bg-blue-500/10 border md:hidden border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
-                LIVE SESSION: {testId}
-              </div>
-            )} */}
-
+          
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4">
               <ConfigForm config={config} testId={testId} setConfig={setConfig} onStart={handleStartTest} onAbort={handleAbortTest} />
@@ -138,6 +134,9 @@ const App = () => {
                 </div>
                 <div className="h-[350px]">
                   <LiveChart data={historyData} />
+                </div>
+                <div className="h-[350px]">
+                  <LatencyBucketHistogram buckets={metrics!=null?metrics.buckets:[]} counts={metrics!=null?metrics.counts:[]}/>
                 </div>
               </div>
             </div>

@@ -30,7 +30,7 @@ const ConfigForm = ({ config, testId, setConfig, onStart , onAbort }) => {
   };
 
   return (
-    <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl max-h-[85vh] overflow-y-auto custom-scrollbar">
+    <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl">
       <div className="flex items-center gap-2 mb-6">
         <ShieldCheck className="text-blue-500" size={24} />
         <h2 className="text-xl font-bold text-blue-400">Test Configuration</h2>
@@ -52,7 +52,7 @@ const ConfigForm = ({ config, testId, setConfig, onStart , onAbort }) => {
             <input 
               type="url" 
               placeholder="https://api.yourdomain.com/v1/test" 
-              className="flex-1 bg-gray-800 p-3 rounded-lg border border-gray-700 text-sm outline-none focus:border-blue-500 transition-all"
+              className="flex-1 bg-gray-800 p-3 rounded-lg border w-2 border-gray-700 text-sm outline-none focus:border-blue-500 transition-all"
               onChange={e => setConfig({...config, url: e.target.value})} 
               required 
             />
@@ -76,7 +76,7 @@ const ConfigForm = ({ config, testId, setConfig, onStart , onAbort }) => {
               <div key={index} className="flex gap-2 animate-in fade-in slide-in-from-left-2 duration-200">
                 <input 
                   placeholder="Key" 
-                  className="flex-1 bg-gray-800 p-2 rounded border border-gray-700 text-xs outline-none focus:border-blue-400"
+                  className="flex-1 bg-gray-800 p-2 rounded border w-1.5 border-gray-700 text-xs outline-none focus:border-blue-400"
                   value={header.key}
                   onChange={e => handleHeaderChange(index, 'key', e.target.value)}
                 />
