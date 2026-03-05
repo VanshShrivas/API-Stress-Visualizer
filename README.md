@@ -7,7 +7,9 @@
 ---
 
 # Demo
-
+1.Working Showcased
+![Demo Video (as GIF)](assets/demovideo.gif)
+2.Features Showcased
 ![DEMO GIF](assets/ezgif.com-animated-gif-maker.gif)
 
 ---
