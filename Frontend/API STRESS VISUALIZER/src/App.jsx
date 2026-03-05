@@ -6,6 +6,7 @@ import { LiveChart } from './components/LiveChart';
 import { useLoadTest } from './useLoadTest';
 import { Menu } from 'lucide-react';
 import LatencyBucketHistogram from './components/LatencyBucketHistogram';
+import ErrorCategorization from './components/ErrorCategorization'
 
 const App = () => {
   const [testId, setTestId] = useState(null);
@@ -23,7 +24,7 @@ const App = () => {
   });
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [type,setType]=useState("pie");
   const { metrics, historyData } = useLoadTest(testId, () => {
     console.log("Test Completed successfully!");
   }); 
@@ -118,7 +119,7 @@ const App = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4">
-              <ConfigForm config={config} testId={testId} setConfig={setConfig} onStart={handleStartTest} onAbort={handleAbortTest} />
+              <ConfigForm config={config} metrics={metrics} setConfig={setConfig} onStart={handleStartTest} onAbort={handleAbortTest} />
             </div>
 
             <div className="lg:col-span-8 space-y-8">
@@ -132,11 +133,14 @@ const App = () => {
                     <span className="text-red-400">● Error %</span>
                   </div>
                 </div>
-                <div className="h-[350px]">
+                <div className="mb-5">
                   <LiveChart data={historyData} />
                 </div>
-                <div className="h-[350px]">
+                <div className="mb-5">
                   <LatencyBucketHistogram buckets={metrics!=null?metrics.buckets:[]} counts={metrics!=null?metrics.counts:[]}/>
+                </div>
+                <div className="mb-5">
+                  <ErrorCategorization type={type} setType={setType} errorStats={metrics!=null?metrics.errorStats:{}}/>
                 </div>
               </div>
             </div>

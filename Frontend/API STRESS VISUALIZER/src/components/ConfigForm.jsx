@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, ShieldCheck } from 'lucide-react'; 
 
-const ConfigForm = ({ config, testId, setConfig, onStart , onAbort }) => {
+const ConfigForm = ({ config, metrics, setConfig, onStart , onAbort }) => {
   const [customHeaders, setCustomHeaders] = useState([{ key: '', value: '' }]);
 
   const addHeader = () => {
@@ -168,7 +168,7 @@ const ConfigForm = ({ config, testId, setConfig, onStart , onAbort }) => {
             Fire Load Test
             </button>
             
-            {testId && (
+            {metrics!=null && metrics.status==="running" && (
             <button 
                 type="button"
                 onClick={onAbort} 
