@@ -49,15 +49,24 @@ async function executeRequest(testState) {
                 ? JSON.stringify(testState.config.body)
                 : undefined,
         });
+        const status=response.status;
+        if(response.ok) testState.success++;
+        if (status >= 200 && status < 300)
+            testState.errorStats.success2xx++;
 
-        if (response.ok) {
-            testState.success++;
-        } else {
+        else if (status >= 400 && status < 500){
+            testState.errorStats.client4xx++;
             testState.errors++;
         }
-
+        else if (status >= 500){
+            testState.errors++;
+            testState.errorStats.server5xx++;
+        }
+        
     } catch (err) {
         testState.errors++;
+        testState.errorStats.networkErrors++;
+
     } finally {
         const latency = Date.now() - start;
         let placed = false;

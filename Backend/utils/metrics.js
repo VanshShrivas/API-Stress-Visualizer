@@ -9,6 +9,7 @@ export default function getMetrics(testState) {
         latencies,
         buckets,
         counts,
+        errorStats,
         startTime,
         endTime,
         status
@@ -65,6 +66,7 @@ export default function getMetrics(testState) {
         errors,
         buckets,
         counts,
+        errorStats,
         successRate,
         errorRate,
         avgLatency,
