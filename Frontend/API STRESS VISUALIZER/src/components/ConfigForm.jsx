@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, ShieldCheck } from 'lucide-react'; 
+import { Plus, Trash2, ShieldCheck, FileText } from 'lucide-react'; 
 
 const ConfigForm = ({ config, metrics, setConfig, onStart , onAbort }) => {
   const [customHeaders, setCustomHeaders] = useState([{ key: '', value: '' }]);
@@ -29,6 +29,12 @@ const ConfigForm = ({ config, metrics, setConfig, onStart , onAbort }) => {
     setConfig({ ...config, additionalHeaders: headerObj });
   };
 
+  const handleDownloadPDF = () => {
+      // Placeholder for backend download logic
+      if (!metrics || !metrics.id) return;
+      window.open(`http://localhost:3500/api/download-report/${metrics.id}`, '_blank');
+  };
+
   return (
     <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl">
       <div className="flex items-center gap-2 mb-6">
@@ -54,6 +60,7 @@ const ConfigForm = ({ config, metrics, setConfig, onStart , onAbort }) => {
               placeholder="https://api.yourdomain.com/v1/test" 
               className="flex-1 bg-gray-800 p-3 rounded-lg border w-2 border-gray-700 text-sm outline-none focus:border-blue-500 transition-all"
               onChange={e => setConfig({...config, url: e.target.value})} 
+              value={config.url}
               required 
             />
           </div>
@@ -177,10 +184,23 @@ const ConfigForm = ({ config, metrics, setConfig, onStart , onAbort }) => {
                 Abort Test
             </button>
             )}
+
+            {metrics != null && (metrics.status === 'completed' || metrics.status === 'aborted') && (
+              <button 
+                type="button"
+                onClick={handleDownloadPDF}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.98] flex items-center justify-center gap-2 overflow-hidden"
+              >
+                <>
+                  <FileText size={18} />
+                  Download PDF Report
+                </>
+              </button>
+            )}
         </div>
       </form>
     </div>
   );
 };
 
-export default ConfigForm;
+export default ConfigForm;

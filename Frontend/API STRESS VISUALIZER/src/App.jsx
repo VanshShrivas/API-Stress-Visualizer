@@ -25,7 +25,7 @@ const App = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [type, setType] = useState("pie");
-  const { metrics, historyData } = useLoadTest(testId, () => {
+  const { metrics, historyData, error } = useLoadTest(testId, () => {
     console.log("Test Completed successfully!");
   });
   //since this depends on testId which is a state in my project..so whenver the id is set (either a new test or the recent test id=>truiggers the useLoadTest function which in turn calls the info route with the given testID which is important to note as this would only be able to give the data if the server has not been restarted in between...to eliminate we have to have to use database or the local client side storage where we can just put in data into the local storage alongwith the testID (for now we are only setting ids into the local storage this can be changed...))
@@ -61,7 +61,7 @@ const App = () => {
       }
       if (data.testID) {
         setTestId(data.testID);
-        const newHistory = [data.testID, ...history].slice(0, 10);
+        const newHistory = [data.testID, ...history.filter(id => id !== data.testID)].slice(0, 10);
         setHistory(newHistory);
         localStorage.setItem('test_history', JSON.stringify(newHistory));
       }
@@ -92,79 +92,76 @@ const App = () => {
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Hamburger Icon */}
-      {/* {(!sidebarOpen && <button 
-        className="absolute top-4 left-4 z-50 p-2 rounded bg-gray-900 border border-gray-700 hover:bg-gray-800 transition"
-        onClick={() => {setSidebarOpen(true)}}
-      >
-        <Menu size={24} className="text-gray-200" />
-      </button>)} */}
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto px-8 pb-8 bg-[#0a0a0a]">
-        {/* <div className="max-w-7xl mx-auto space-y-8"> */}
-          <header className="sticky top-1 z-40 mb-5 backdrop-blur-sm rounded-full border border-gray-800">
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <header className="sticky top-1 z-40 mb-5 backdrop-blur-sm rounded-full border border-gray-800">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-              <div className="flex justify-between">
+            <div className="flex justify-between">
 
-                {/* Hamburger */}
-                <button
-                  className="mr-2 flex items-center justify-center"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <Menu size={22} className="text-gray-200 hover:text-gray-500" />
-                </button>
+              {/* Hamburger */}
+              <button
+                className="mr-2 flex items-center justify-center"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu size={22} className="text-gray-200 hover:text-gray-500" />
+              </button>
 
-                <div>
-                  <h1 className="text-2xl font-black italic text-white tracking-tighter">
-                    LOAD<span className="text-blue-500">VIZ</span>
-                  </h1>
-                  <p className="text-gray-500 text-xs font-medium">
-                    Monitor your API performance in real-time.
-                  </p>
-                </div>
-
+              <div>
+                <h1 className="text-2xl font-black italic text-white tracking-tighter">
+                  LOAD<span className="text-blue-500">VIZ</span>
+                </h1>
+                <p className="text-gray-500 text-xs font-medium">
+                  Monitor your API performance in real-time.
+                </p>
               </div>
 
-              {testId && (
-                <div className=" hidden md:block px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
-                  LIVE SESSION: {testId}
-                </div>
-              )}
-
-            </div>
-          </header>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-4">
-              <ConfigForm config={config} metrics={metrics} setConfig={setConfig} onStart={handleStartTest} onAbort={handleAbortTest} />
             </div>
 
-            <div className="lg:col-span-8 space-y-8">
-              <MetricsGrid metrics={metrics} />
-              <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-2xl">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="font-bold text-gray-400 uppercase tracking-widest text-sm">Performance Trends</h3>
-                  <div className="flex gap-4 text-[10px] font-bold uppercase">
-                    <span className="text-blue-400">● Throughput</span>
-                    <span className="text-green-400">● Success %</span>
-                    <span className="text-red-400">● Error %</span>
-                  </div>
+            {testId && (
+              <div className=" hidden md:block px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
+                LIVE SESSION: {testId}
+              </div>
+            )}
+
+          </div>
+        </header>
+
+        {error && (
+          <div className="max-w-7xl mx-auto mb-6 p-4 bg-red-950/30 border border-red-500/50 rounded-xl text-red-400 text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+            <span className="text-lg">⚠️</span> {error}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-4">
+            <ConfigForm config={config} metrics={metrics} setConfig={setConfig} onStart={handleStartTest} onAbort={handleAbortTest} />
+          </div>
+
+          <div className="lg:col-span-8 space-y-8">
+            <MetricsGrid metrics={metrics} />
+            <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-gray-400 uppercase tracking-widest text-sm">Performance Trends</h3>
+                <div className="flex gap-4 text-[10px] font-bold uppercase">
+                  <span className="text-blue-400">● Throughput</span>
+                  <span className="text-green-400">● Success %</span>
+                  <span className="text-red-400">● Error %</span>
                 </div>
-                <div className="mb-5">
-                  <LiveChart data={historyData} />
-                </div>
-                <div className="mb-5">
-                  <LatencyBucketHistogram buckets={metrics != null ? metrics.buckets : []} counts={metrics != null ? metrics.counts : []} />
-                </div>
-                <div className="mb-5">
-                  <ErrorCategorization type={type} setType={setType} errorStats={metrics != null ? metrics.errorStats : {}} />
-                </div>
+              </div>
+              <div className="mb-5">
+                <LiveChart data={historyData} />
+              </div>
+              <div className="mb-5">
+                <LatencyBucketHistogram buckets={metrics != null ? metrics.buckets : []} counts={metrics != null ? metrics.counts : []} />
+              </div>
+              <div className="mb-5">
+                <ErrorCategorization type={type} setType={setType} errorStats={metrics != null ? metrics.errorStats : {}} />
               </div>
             </div>
           </div>
-        {/* </div> */}
+        </div>
       </main>
     </div>
   );

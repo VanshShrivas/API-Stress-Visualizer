@@ -6,9 +6,9 @@ import { addTestState } from "../store/testStore.js";
 import { tests } from "../store/testStore.js";
 import runScheduler from "../utils/scheduler.js";
 
-export default async function startLoadTest(config){
+export default async function startLoadTest(config) {
 
-            // 1. Validate config
+    // 1. Validate config
     if (config.totalRequests <= 0) {
         throw new AppError("totalRequests must be positive", 400);
     }
@@ -18,26 +18,39 @@ export default async function startLoadTest(config){
     if (config.concurrency > config.totalRequests) {
         throw new AppError("Concurrency cannot exceed totalRequests", 400);
     }
-    if(config.concurrency>567 || config.totalRequests>10000){
-        throw new AppError("Keep values under given limits😭",400);
+    if (config.concurrency > 567 || config.totalRequests > 10000) {
+        throw new AppError("Keep values under given limits😭", 400);
     }
     if (!config.url) {
         throw new AppError("URL is required", 400);
     }
-            // 2. Validate endpoint (1 test request)
+    // 2. Validate endpoint (1 test request)
     await validateEndpoint(config);
-    
-            // 3. Create test state
-    const testState=createTestState(config);
+
+    // 3. Create test state
+    const testState = createTestState(config);
     addTestState(testState);
     console.log(testState);
-            // 4. Start async scheduler
+    // 4. Start async scheduler
     runScheduler(testState);
-            // 5. Immediately return testId :(w/o realtime feature: we are just aggreagting all the data into the testStae and returning the id so that the user knows it and can )
-    return {testID: testState.id};
-            // NOT:
-            // Wait for all requests
-            // Return final summary
+
+    // 5. Start history ticker for report generation
+    const ticker = setInterval(() => {
+        if (testState.status !== "running") {
+            clearInterval(ticker);
+            return;
+        }
+        const metrics = getMetrics(testState);
+        testState.history.push({
+            timestamp: Date.now(),
+            throughput: metrics.throughput,
+            successRate: metrics.successRate,
+            errorRate: metrics.errorRate
+        });
+    }, 1000);
+
+    // 6. Immediately return testId
+    return { testID: testState.id };
 }
 
 // //Stress engine me do cheezein parallel chalti hain:

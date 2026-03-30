@@ -1,7 +1,6 @@
-import AppError from "../utils/AppError.js";
-
 export default function getMetrics(testState) {
     const {
+        id,
         totalRequests,
         completed,
         success,
@@ -12,7 +11,8 @@ export default function getMetrics(testState) {
         errorStats,
         startTime,
         endTime,
-        status
+        status,
+        history
     } = testState;
 
     const now = endTime ? endTime : Date.now();
@@ -21,6 +21,7 @@ export default function getMetrics(testState) {
     // Basic safety
     if (completed === 0) {
         return {
+            id,
             status,
             totalRequests,
             completed: 0,
@@ -59,6 +60,7 @@ export default function getMetrics(testState) {
         : 0;
 
     return {
+        id,
         status,
         totalRequests,
         completed,
@@ -73,6 +75,7 @@ export default function getMetrics(testState) {
         minLatency,
         maxLatency,
         p95Latency,
-        throughput
+        throughput,
+        history
     };
 }

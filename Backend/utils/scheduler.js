@@ -1,6 +1,6 @@
 export default async function runScheduler(testState) {
 
-    const { totalRequests, concurrency} = testState;
+    const { totalRequests, concurrency } = testState;
 
     let running = 0;
     let index = 0;
@@ -11,27 +11,27 @@ export default async function runScheduler(testState) {
             while (running < concurrency && index < totalRequests) {
                 running++;
                 index++;
-                
-                executeRequest(testState)
-                .finally(() => {
-                    running--;
-                    testState.completed++;
-                    
-                    if (testState.aborted || testState.completed === totalRequests) {
-                        if(testState.aborted)
-                            testState.status = "aborted";
-                        else 
-                            testState.status="completed";
 
-                        testState.endTime = Date.now();
-                        resolve();
-                    } else {
-                        launchNext();
-                    }
-                });
+                executeRequest(testState)
+                    .finally(() => {
+                        running--;
+                        testState.completed++;
+
+                        if (testState.aborted || testState.completed === totalRequests) {
+                            if (testState.aborted)
+                                testState.status = "aborted";
+                            else
+                                testState.status = "completed";
+
+                            testState.endTime = Date.now();
+                            resolve();
+                        } else {
+                            launchNext();
+                        }
+                    });
             }
         }
-        
+
         launchNext();
     });
 }
@@ -42,27 +42,31 @@ async function executeRequest(testState) {
     const method = (testState.config.method || "GET").toUpperCase();
 
     try {
-        const response = await fetch(testState.config.url,{
+        const response = await fetch(testState.config.url, {
             method,
             headers: testState.config.headers,
             body: ["POST", "PUT", "PATCH"].includes(method) && testState.config.body
                 ? JSON.stringify(testState.config.body)
                 : undefined,
         });
-        const status=response.status;
-        if(response.ok) testState.success++;
-        if (status >= 200 && status < 300)
-            testState.errorStats.success2xx++;
+        const status = response.status;
 
-        else if (status >= 400 && status < 500){
-            testState.errorStats.client4xx++;
+        if (response.ok) {
+            testState.success++;
+        } else {
             testState.errors++;
         }
-        else if (status >= 500){
-            testState.errors++;
+
+        if (status >= 200 && status < 300) {
+            testState.errorStats.success2xx++;
+        } else if (status >= 300 && status < 400) {
+            testState.errorStats.redirect3xx++;
+        } else if (status >= 400 && status < 500) {
+            testState.errorStats.client4xx++;
+        } else if (status >= 500) {
             testState.errorStats.server5xx++;
         }
-        
+
     } catch (err) {
         testState.errors++;
         testState.errorStats.networkErrors++;

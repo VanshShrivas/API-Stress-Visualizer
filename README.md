@@ -45,13 +45,8 @@ npm install
 ## 3. Start backend server
 
 ```bash
+cd Backend
 nodemon index.js
-```
-
-or
-
-```bash
-node index.js
 ```
 
 ---
@@ -59,6 +54,7 @@ node index.js
 ## 4. Start frontend
 
 ```bash
+cd Frontend/"API STRESS VISUALIZER"
 npm run dev
 ```
 
@@ -102,7 +98,7 @@ Backend API (Node.js + Express)
 Async Request Workers
         │
         ▼
-Metrics Aggregator
+Metrics Aggregator (Real-time Snapshots)
 ```
 
 ---
@@ -248,6 +244,26 @@ errorStats: {
             networkErrors: 0
         }
 ```
+
+---
+
+# 7. PDF Report Generation (NEW)
+
+The backend now supports generating professional, high-fidelity PDF reports.
+
+### Features:
+- **Vector-Based Charts**: Unlike screenshots, the PDF uses vector graphics for perfectly crisp charts at any zoom level.
+- **Background Recorder**: A "flight recorder" on the backend captures performance snapshots every second during the test.
+- **Comprehensive Data**:
+  - **Metrics Summary**: Success rate, Average/P95 latency, Throughput.
+  - **Performance Trends**: Line charts for Throughput, Error and Success % over time.
+  - **Error Distribution**: Pie chart with precise category counts.
+  - **Latency Histogram**: Detailed bar chart showing response distribution.
+
+Example Generation Logic:
+[View PDF Generator](Backend/utils/pdfGenerator.js)
+![Report Sample](assets/Report_SS_1.png)
+![Report Sample](assets/Report_SS_2.png)
 
 ---
 

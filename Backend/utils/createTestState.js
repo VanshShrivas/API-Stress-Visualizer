@@ -15,10 +15,12 @@ export default function createTestState(config){
         counts:[0,0,0,0,0,0,0,0,0,0,0,0],
         errorStats: {
             success2xx: 0,
+            redirect3xx: 0,
             client4xx: 0,
             server5xx: 0,
             networkErrors: 0
         },
+        history: [],
         aborted:false,
         startTime: Date.now(),
         endTime: null

@@ -14,18 +14,20 @@ ChartJS.register(
 const ErrorCategorization = ({ type,setType, errorStats = {} }) => {
   const {
     success2xx = 0,
+    redirect3xx = 0,
     client4xx = 0,
     server5xx = 0,
     networkErrors = 0
   } = errorStats;
 
   const data = {
-    labels: ["2xx Success", "4xx Client", "5xx Server", "Network"],
+    labels: ["2xx Success", "3xx Redirect", "4xx Client", "5xx Server", "Network"],
     datasets: [
     {
-        data: [success2xx, client4xx, server5xx, networkErrors],
+        data: [success2xx, redirect3xx, client4xx, server5xx, networkErrors],
         backgroundColor: [
           "#4ade80",
+          "#fb923c",
           "#facc15",
           "#f87171", 
           "#60a5fa"  
@@ -50,7 +52,7 @@ const ErrorCategorization = ({ type,setType, errorStats = {} }) => {
     }
    };
 
-  const total = success2xx + client4xx + server5xx + networkErrors;
+  const total = success2xx + redirect3xx + client4xx + server5xx + networkErrors;
 
   if (total === 0) {
     return null;
