@@ -426,6 +426,7 @@ Error categorization has been implemented to identify specific response types.
 ### b. Session Persistence Issue
 
 Currently metrics are stored **only in server memory**.
+"That's why I have currrently implemented automatica deletion of testStates which are older than 15minutes and this process happens every 30 minutes."
 
 If the server restarts:
 
