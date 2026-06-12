@@ -1,8 +1,10 @@
 # LOADVIZ
 
-> Real-time API Load Testing & Performance Visualization Tool
+> A high-performance, real-time API load testing and performance visualization engine.
 
-“I built this tool mainly to demonstrate concurrency handling, async scheduling, metrics aggregation, and API testing concepts. I chose not to deploy it publicly because stress testing arbitrary APIs from a server could cause legal or technical issues. The repo shows the full implementation and design.”
+**LoadViz** is a developer tool built to execute high-concurrency API stress tests, track live latency/throughput metrics, and persist run histories for comparative performance regression analysis.
+
+*Note: Since stress testing arbitrary third-party endpoints from a public cloud server can trigger rate limits or security blocks, LoadViz is designed to run locally. This repository contains the complete full-stack implementation, database persistence logic, and system architecture.*
 
 ---
 
@@ -24,7 +26,19 @@ git clone https://github.com/VanshShrivas/API-Stress-Visualizer
 
 ---
 
-## 2. Install dependencies
+## 2. Prerequisites & Configuration
+
+Ensure you have **Node.js** (v18+) and **MongoDB** installed and running locally.
+
+Create a `.env` file inside the `Backend` directory:
+```env
+PORT=3500
+MONGODB_URI=mongodb://localhost:27017/loadviz
+```
+
+---
+
+## 3. Install dependencies
 
 Backend:
 
@@ -42,7 +56,7 @@ npm install
 
 ---
 
-## 3. Start backend server
+## 4. Start backend server
 
 ```bash
 cd Backend
@@ -51,7 +65,7 @@ nodemon index.js
 
 ---
 
-## 4. Start frontend
+## 5. Start frontend
 
 ```bash
 cd Frontend/"API STRESS VISUALIZER"
@@ -60,7 +74,7 @@ npm run dev
 
 ---
 
-## 5. Open the application
+## 6. Open the application
 
 ```
 http://localhost:5173
@@ -111,7 +125,8 @@ The backend is responsible for:
 - scheduling concurrent requests
 - collecting metrics
 - exposing metrics through API endpoints
-
+- generating PDF reports using the metrics
+- run comparisons
 ---
 
 # 1. Input Validation
@@ -330,6 +345,46 @@ GET /api/abort-test/:id
 ```
 
 Stops an ongoing test.
+
+---
+
+## Get Historical Runs
+
+```
+GET /api/history?sortBy=timestamp&order=desc
+```
+
+Retrieves a list of all historical runs. Supports query parameters `sortBy` (`timestamp`, `metrics.avgLatency`, `metrics.p95Latency`, `metrics.throughput`) and `order` (`asc`, `desc`).
+
+---
+
+## Get Historical Run Details
+
+```
+GET /api/history/:testId
+```
+
+Retrieves the full metrics breakdown, response distribution, second-by-second performance history, and configurations of a specific completed run.
+
+---
+
+## Compare Runs
+
+```
+GET /api/compare?runA=:idA&runB=:idB
+```
+
+Compares two historical runs side-by-side. Returns the complete data for both runs along with computed performance deltas (percentage differences in throughput, average latency, and success rate).
+
+---
+
+## Download PDF Report
+
+```
+GET /api/download-report/:id
+```
+
+Generates and downloads a high-fidelity PDF report of the specified test run session (supports both active cached runs and database-persisted historical runs).
 
 ---
 
