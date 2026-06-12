@@ -62,6 +62,7 @@ export default function getMetrics(testState) {
     return {
         id,
         status,
+        config: testState.config,
         totalRequests,
         completed,
         success,

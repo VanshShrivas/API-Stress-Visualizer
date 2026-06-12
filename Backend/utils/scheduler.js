@@ -1,3 +1,5 @@
+import persistCompletedRun from '../services/persistRun.js';
+
 export default async function runScheduler(testState) {
 
     const { totalRequests, concurrency } = testState;
@@ -24,6 +26,13 @@ export default async function runScheduler(testState) {
                                 testState.status = "completed";
 
                             testState.endTime = Date.now();
+
+                            // imp: Ensuring we only persist exactly once, even if multiple workers finish during an abort
+                            if (!testState.persisted) {
+                                testState.persisted = true;
+                                persistCompletedRun(testState);
+                            }
+
                             resolve();
                         } else {
                             launchNext();

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import ConfigForm from './components/ConfigForm';
 import MetricsGrid from './components/MetricsGrid';
 import { LiveChart } from './components/LiveChart';
 import { useLoadTest } from './useLoadTest';
-import { Menu } from 'lucide-react';
+import { Menu, History } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import LatencyBucketHistogram from './components/LatencyBucketHistogram';
 import ErrorCategorization from './components/ErrorCategorization'
 
@@ -28,6 +29,24 @@ const App = () => {
   const { metrics, historyData, error } = useLoadTest(testId, () => {
     console.log("Test Completed successfully!");
   });
+
+  const lastLoadedIdRef = useRef(null);
+
+  useEffect(() => {
+    if (metrics && metrics.id && metrics.id !== lastLoadedIdRef.current) {
+      lastLoadedIdRef.current = metrics.id;
+      if (metrics.config) {
+        setConfig(prev => ({
+          ...prev,
+          url: metrics.config.url || '',
+          method: metrics.config.method || 'GET',
+          totalRequests: metrics.config.totalRequests || 100,
+          concurrency: metrics.config.concurrency || 10,
+          body: metrics.config.body ? (typeof metrics.config.body === 'object' ? JSON.stringify(metrics.config.body, null, 2) : metrics.config.body) : ''
+        }));
+      }
+    }
+  }, [metrics]);
   //since this depends on testId which is a state in my project..so whenver the id is set (either a new test or the recent test id=>truiggers the useLoadTest function which in turn calls the info route with the given testID which is important to note as this would only be able to give the data if the server has not been restarted in between...to eliminate we have to have to use database or the local client side storage where we can just put in data into the local storage alongwith the testID (for now we are only setting ids into the local storage this can be changed...))
 
   const handleStartTest = async (e) => {
@@ -98,7 +117,7 @@ const App = () => {
         <header className="sticky top-1 z-40 mb-5 backdrop-blur-sm rounded-full border border-gray-800">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center gap-4">
 
               {/* Hamburger */}
               <button
@@ -112,18 +131,24 @@ const App = () => {
                 <h1 className="text-2xl font-black italic text-white tracking-tighter">
                   LOAD<span className="text-blue-500">VIZ</span>
                 </h1>
-                <p className="text-gray-500 text-xs font-medium">
+                <p className="text-gray-500 text-xs font-medium hidden md:block">
                   Monitor your API performance in real-time.
                 </p>
               </div>
-
             </div>
 
-            {testId && (
-              <div className=" hidden md:block px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
-                LIVE SESSION: {testId}
-              </div>
-            )}
+            <div className="flex items-center gap-6">
+              <Link to="/history" className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition-colors">
+                <History size={18} />
+                Historical Runs
+              </Link>
+
+              {testId && (
+                <div className="hidden md:block px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-xs font-bold animate-pulse">
+                  LIVE SESSION: {testId}
+                </div>
+              )}
+            </div>
 
           </div>
         </header>

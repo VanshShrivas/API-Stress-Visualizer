@@ -1,22 +1,28 @@
-import express, { urlencoded } from 'express'
-import cors from 'cors'
-import {router} from './routes/routes.js'
-import { deleteTestState } from './store/testStore.js';
-import { tests } from './store/testStore.js';
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import { router } from './routes/routes.js';
+import { historyRouter } from './routes/historyRoutes.js';
+import connectDB from './db.js';
 
-const app= express();
+const app = express();
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); 
+app.use(express.json());
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['GET','POST','PUT','PATCH', 'DELETE'], 
-  credentials: true 
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  credentials: true
 }));
-const port=3500;
 
-//mount all the routes
-app.use("/api",router); 
+const port = process.env.PORT || 3500;
 
-app.listen(port,()=>{
-    console.log(`Server is active at port ${port}`);
-})
+// Mount all routes
+app.use("/api", router);
+app.use("/api", historyRouter);
+
+// Connect to MongoDB, then start the server
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log(`Server is active at port ${port}`);
+    });
+});
