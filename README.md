@@ -265,6 +265,19 @@ Example Generation Logic:
 ![Report Sample](assets/Report_SS_1.png)
 ![Report Sample](assets/Report_SS_2.png)
 
+# 8. Historical Runs & Run Comparison (NEW)
+
+The backend persists completed test runs in MongoDB and provides endpoints to list, query, and compare performance sessions.
+
+### Features:
+- **Persistent Storage**: Saves test metrics, configuration settings (URL, method, concurrency, total requests), error statistics, latency histogram distributions, and second-by-second performance history.
+- **Side-by-Side Comparison**: Exposes a comparison endpoint that calculates performance deltas (percentage improvements or regressions in latency, throughput, and success rates) between any two historical runs.
+- **Sort & Query Features**: Allows querying and sorting historical runs by timestamp, average latency, p95 latency, and throughput.
+
+Example Logic:
+- [View Compare Logic](Backend/utils/compareRuns.js)
+- [View History Routes](Backend/routes/historyRoutes.js)
+
 ---
 
 # API Routes
@@ -417,26 +430,16 @@ Pie / Bar chart showing response breakdown.
 
 # Current Limitations / Future Improvements
 
-### a. ~~Error Categorization~~
+### a. Error Categorization (Fully Implemented)
 
-Error categorization has been implemented to identify specific response types.
+Error categorization has now been implemented to identify specific response types.
 
 ---
 
-### b. Session Persistence Issue
+### b. Session Persistence (Fully Implemented)
 
-Currently metrics are stored **only in server memory**.
-"That's why I have currrently implemented automatica deletion of testStates which are older than 15minutes and this process happens every 30 minutes."
+Historical test runs are now persisted using MongoDB. If the backend server restarts, all past session metrics, trends, and reports can still be retrieved, compared, or downloaded as PDFs.
 
-If the server restarts:
-
-- previous session metrics are lost
-- recent sessions cannot be restored
-
-Possible improvements:
-
-- store metrics in **localStorage**
-- store metrics in a **database**
 
 ---
 
