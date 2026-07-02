@@ -10,9 +10,9 @@
 
 # Demo
 1.Working Showcased
-![Demo Video (as GIF)](assets/demovideo.gif)
-2.Features Showcased
-![DEMO GIF](assets/ezgif.com-animated-gif-maker.gif)
+<video src="assets/working2.mp4" controls width="100%"></video>
+2.Features Showcased (Updated)
+![DEMO GIF](assets/features2.gif)
 
 ---
 
