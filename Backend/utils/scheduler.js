@@ -51,13 +51,20 @@ async function executeRequest(testState) {
     const method = (testState.config.method || "GET").toUpperCase();
 
     try {
+        const controller = new AbortController();
+        // 10-second timeout to prevent deadlocking the worker pool
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
         const response = await fetch(testState.config.url, {
             method,
             headers: testState.config.headers,
             body: ["POST", "PUT", "PATCH"].includes(method) && testState.config.body
                 ? JSON.stringify(testState.config.body)
                 : undefined,
+            signal: controller.signal
         });
+        
+        clearTimeout(timeout);
         const status = response.status;
 
         if (response.ok) {
